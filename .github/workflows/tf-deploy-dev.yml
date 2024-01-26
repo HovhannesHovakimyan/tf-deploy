@@ -1,0 +1,78 @@
+# This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
+# with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
+# `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
+# to the "dev" branch, `terraform apply` will be executed.
+#
+# Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
+#
+
+---
+name: "Deploy TF code to dev env"
+on:
+  push:
+    branches: ["dev"]
+    paths:
+      - "terraform/captionhealth.com/dev/**" # Trigger only for changes in "dev" directory on "dev" branch
+  pull_request:
+    paths:
+      - "terraform/captionhealth.com/dev/**" # Trigger if any file within "dev" directory changes
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: "Terraform -> Dev"
+    runs-on: ubuntu-latest
+    environment: dev
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Authenticate against Azure Cloud
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Set Azure Subscription
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az account set --subscription dd3864be-25c5-4fd3-8e25-72dcbc077d5b
+            az account show
+
+      - name: Setup Terraform 1.7.0
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0" # adjust version as needed
+
+      # Navigate to the "dev" environment
+      - name: Change Directory
+        run: cd terraform/captionhealth.com/dev
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        run: terraform init
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        run: terraform plan -input=false
+
+        # On push to "dev", build or change infrastructure according to Terraform configuration files
+        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/"dev"' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
