@@ -47,7 +47,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription f666585b-231b-4711-bbe1-8fad4cbcf1c4
+            az account set --subscription dd3864be-25c5-4fd3-8e25-72dcbc077d5b
             az account show
 
       - name: Setup Terraform 1.7.0
