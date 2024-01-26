@@ -30,6 +30,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: terraform/captionhealth.com/dev
 
     steps:
       # Checkout the repository to the GitHub Actions runner
@@ -54,10 +55,6 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.0" # adjust version as needed
-
-      # Navigate to the "dev" environment
-      - name: Change Directory
-        run: cd terraform/captionhealth.com/dev
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
