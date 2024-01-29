@@ -17,8 +17,11 @@ on:
     paths:
       - "terraform/captionhealth.com/dev/**" # Trigger if any file within "dev" directory changes
 
+#Special permissions required for OIDC authentication
 permissions:
+  id-token: write
   contents: read
+  pull-requests: write
 
 jobs:
   terraform:
