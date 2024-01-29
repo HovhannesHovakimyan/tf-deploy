@@ -17,8 +17,18 @@ on:
     paths:
       - "terraform/captionhealth.com/dev/**" # Trigger if any file within "dev" directory changes
 
+#Special permissions required for OIDC authentication
 permissions:
+  id-token: write
   contents: read
+  pull-requests: write
+
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate.
+env:
+  ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+  tf_actions_working_dir: "./terraform/captionhealth.com/dev"
 
 jobs:
   terraform:
@@ -30,34 +40,32 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ${{ env.tf_actions_working_dir }}
 
     steps:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
-        uses: actions/checkout@v3
-
-      # Authenticate against Azure Cloud
-      - name: Set up Azure CLI
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        uses: actions/checkout@v4
 
       # Set Azure Subscription
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Azure CLI script
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription dd3864be-25c5-4fd3-8e25-72dcbc077d5b
             az account show
+            pwd
 
       - name: Setup Terraform 1.7.0
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.0" # adjust version as needed
-
-      # Navigate to the "dev" environment
-      - name: Change Directory
-        run: cd terraform/captionhealth.com/dev
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init

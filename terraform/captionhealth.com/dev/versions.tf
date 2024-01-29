@@ -14,10 +14,11 @@ terraform {
   backend "azurerm" {
     tenant_id            = "f7975858-e584-4011-9388-12c7a0bc176f" # Default Directory
     subscription_id      = "dd3864be-25c5-4fd3-8e25-72dcbc077d5b" # Azure Subscription 1
-    use_azuread_auth     = true
     resource_group_name  = "TerraformState"
     storage_account_name = "hhrgglobalyoeastus"
     container_name       = "terraform-state"
     key                  = "dev.terraform.tfstate"
+
+    use_oidc = true
   }
 }
