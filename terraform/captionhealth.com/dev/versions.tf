@@ -18,5 +18,7 @@ terraform {
     storage_account_name = "hhrgglobalyoeastus"
     container_name       = "terraform-state"
     key                  = "dev.terraform.tfstate"
+
+    use_oidc = true
   }
 }
