@@ -39,7 +39,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform/captionhealth.com/dev
 
     steps:
       # Checkout the repository to the GitHub Actions runner
@@ -73,17 +72,14 @@ jobs:
 
       # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
-        tf_actions_working_dir: ./terraform/captionhealth.com/dev
         run: terraform fmt -check
 
       # Generates an execution plan for Terraform
       - name: Terraform Plan
-        tf_actions_working_dir: ./terraform/captionhealth.com/dev
         run: terraform plan -input=false
 
         # On push to "dev", build or change infrastructure according to Terraform configuration files
         # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
       - name: Terraform Apply
-        tf_actions_working_dir: ./terraform/captionhealth.com/dev
         if: github.ref == 'refs/heads/"dev"' && github.event_name == 'push'
         run: terraform apply -auto-approve -input=false
