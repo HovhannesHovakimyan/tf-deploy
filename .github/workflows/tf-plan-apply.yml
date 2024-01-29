@@ -171,6 +171,9 @@ jobs:
         name: ${{ env.tf_actions_working_dir }}/tfplan
         path: ${{ env.tf_actions_working_dir }}
 
+    - name: Display structure of downloaded files
+      run: ls -R your/destination/dir
+
     # Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
