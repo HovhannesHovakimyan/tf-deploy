@@ -8,7 +8,7 @@ output "names" {
   value       = module.name.names
 }
 
-output "resource_groups" {
-  description = "All created resource groups"
-  value       = module.resource_group.resource_groups
-}
+# output "resource_groups" {
+#   description = "All created resource groups"
+#   value       = module.resource_group.resource_groups
+# }
