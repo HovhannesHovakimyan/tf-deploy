@@ -169,6 +169,11 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Display structure of downloaded files
+        run: |
+          pwd
+          ls -R
+
       # Download saved plan from artifacts
       - name: Download Terraform Plan
         uses: actions/download-artifact@v4
