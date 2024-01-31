@@ -178,7 +178,7 @@ jobs:
       - name: Download Terraform Plan
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.tf_actions_working_dir }}/tfplan
+          name: tfplan
           path: ${{ env.tf_actions_working_dir }}
 
       - name: Display structure of downloaded files
