@@ -99,7 +99,7 @@ jobs:
           path: ${{ env.tf_actions_working_dir }}/tfplan
 
       - name: Display structure of uploaded files
-        run: ls -R ${{ env.tf_actions_working_dir }}
+        run: pwd
 
       # Create string output of Terraform Plan
       - name: Create String Output
@@ -175,7 +175,7 @@ jobs:
           path: ${{ env.tf_actions_working_dir }}
 
       - name: Display structure of downloaded files
-        run: ls -R ${{ env.tf_actions_working_dir }}
+        run: pwd
 
       # Terraform Apply
       - name: Terraform Apply
