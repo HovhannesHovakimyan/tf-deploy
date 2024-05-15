@@ -1,10 +1,9 @@
----
 name: Create myfile.txt Job
 on:
   workflow_call:
     inputs:
       directories:
-        description: "List of directories to create myfile.txt in"
+        description: 'List of directories to create myfile.txt in'
         required: true
         type: string
 
@@ -13,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Create myfile.txt in each directory
         run: |
           for DIR in ${{ inputs.directories }}; do

@@ -1,0 +1,37 @@
+name: Create myfile.txt in each second-level subfolder
+
+on:
+  push:
+    paths:
+      - "terraform/captionhealth.com/**"
+  workflow_dispatch:
+
+jobs:
+  find-subfolders-and-create-myfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Find second-level subfolders
+        id: find-subfolders
+        run: |
+          # Change to the target directory
+          cd terraform/captionhealth.com
+
+          # Find second-level subdirectories
+          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ' ')
+
+          # Call the reusable job to create myfile.txt in each directory
+          echo "::set-output name=directories::$SUBFOLDERS"
+
+          # Pass the found directories to the reusable job
+          echo "::group::Directories found"
+          echo "$SUBFOLDERS"
+          echo "::endgroup::"
+
+          # Call the reusable job with the found directories as input
+          echo "::group::Creating myfile.txt"
+          echo "$SUBFOLDERS" | xargs -I {} -d ' ' gh workflow run create_myfile_job.yml --directory {}
+          echo "::endgroup::"
