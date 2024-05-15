@@ -1,0 +1,25 @@
+---
+name: Create myfile.txt Job
+on:
+  workflow_call:
+    inputs:
+      directories:
+        description: "List of directories to create myfile.txt in"
+        required: true
+        type: string
+
+jobs:
+  create-myfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create myfile.txt in each directory
+        run: |
+          for DIR in ${{ inputs.directories }}; do
+            echo "Creating myfile.txt in $DIR"
+            touch "$DIR/myfile.txt"
+          done
+        shell: bash

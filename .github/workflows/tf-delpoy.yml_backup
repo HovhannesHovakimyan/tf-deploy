@@ -1,0 +1,275 @@
+# This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
+# with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
+# `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
+# to the "dev" branch, `terraform apply` will be executed.
+#
+# Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
+#
+
+---
+name: "Terraform Plan/Apply"
+
+on:
+  workflow_run:
+    workflows: ["Azure ARM"]
+    types:
+      - completed
+  push:
+    branches:
+      - dev
+    paths:
+      - "terraform/captionhealth.com/**" # Trigger on pull requests with changes in the corresponding project directory
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - "terraform/captionhealth.com/**" # Trigger on pull requests with changes in the corresponding project directory
+
+# Special permissions required for OIDC authentication
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+# These environment variables are used by the terraform azure provider to setup OIDD authenticate.
+env:
+  ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+  tf_version: "1.8.3" # adjust version as needed
+  tf_actions_working_dir: "terraform/captionhealth.com/dev1/ccp1"
+
+jobs:
+  terraform-plan:
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    environment: dev
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        # working-directory: ${{ env.tf_actions_working_dir }}
+    env:
+      # This is needed since we are running terraform with read-only permissions
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+    outputs:
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Output the first 4 characters of the environment variables required to authenticate against Azure
+      - name: Print for troubleshooting
+        run: |
+          echo "${ARM_CLIENT_ID:0:4}"
+          echo "${ARM_SUBSCRIPTION_ID:0:4}"
+          echo "${ARM_TENANT_ID:0:4}"
+
+      # Set Azure Subscription
+      - name: "Az CLI login"
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.ARM_CLIENT_ID }}
+          tenant-id: ${{ env.ARM_TENANT_ID }}
+          subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+
+      # Install the latest version of the Terraform CLI
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+          terraform_version: ${{ env.tf_version }}
+
+      - name: List subfolders
+        id: list-subfolders
+        run: |
+          cd ${{ env.tf_actions_working_dir }}
+          subfolders=$(find captionhealth.com -mindepth 1 -maxdepth 1 -type d)
+          echo "subfolders=$subfolders" >> $GITHUB_ENV
+
+      - name: Deploy Terraform for each subfolder
+
+        run: |
+          for folder in ${{ env.subfolders }}
+          do
+            echo "Processing $folder"
+            cd $folder
+
+            # Checks that all Terraform configuration files adhere to a canonical format
+            terraform fmt -check
+
+            # Initialize Terraform
+            terraform init
+
+            # Validate the Terraform configuration
+            terraform validate
+
+            # Generates an execution plan for Terraform
+            # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
+            export exitcode=0
+            terraform plan -detailed-exitcode -out tfplan || export exitcode=$?
+
+            echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+
+            if [ $exitcode -eq 1 ]; then
+              echo Terraform Plan Failed!
+              exit 1
+            else
+              exit 0
+            fi
+
+            cd - # Return to the previous directory
+          done
+
+      # Save plan to artifacts
+      - name: Publish Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.tf_actions_working_dir }}/tfplan
+
+      - name: Display structure of uploaded files
+        run: |
+          cd ../../../
+          pwd
+          ls -R
+
+      # Terraform Plan output to file
+      - name: Echo plan output to a file
+        run: |
+          echo "${{ steps.tf-plan.outputs.stdout }}" > plan.out
+
+      # Install FS using NPM
+      - name: Install fs module
+        run: npm install fs
+
+      # If this is a PR post the changes
+      - name: Push Terraform Output to PR
+        if: github.ref != 'refs/heads/dev'
+        uses: actions/github-script@v7
+        env:
+          path: "${{ env.tf_actions_working_dir }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { readFile } = require("fs/promises")
+            const path = process.env.path;
+            const data = await readFile(path + '/plan.out')
+
+            const plan = "terraform\n" + data.length > 65000 ? `${data.substring(0, 65000)}...` : data
+
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
+
+            // 2. Prepare format of the comment
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.tf-fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.tf-init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.tf-validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+
+            \`\`\`\n
+            ${{ steps.tf-validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Plan 📖\`${{ steps.tf-plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${plan}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+  terraform-apply:
+    name: "Terraform Apply"
+    if: github.ref == 'refs/heads/dev' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    runs-on: ubuntu-latest
+    environment: dev
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.tf_actions_working_dir }}
+    needs: [terraform-plan]
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Output the first 4 characters of the environment variables required to authenticate against Azure
+      - name: Print for troubleshooting
+        run: |
+          echo "${ARM_CLIENT_ID:0:4}"
+          echo "${ARM_SUBSCRIPTION_ID:0:4}"
+          echo "${ARM_TENANT_ID:0:4}"
+
+      # Set Azure Subscription
+      - name: "Az CLI login"
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.ARM_CLIENT_ID }}
+          tenant-id: ${{ env.ARM_TENANT_ID }}
+          subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.tf_version }}
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Display structure of downloaded files
+        run: |
+          pwd
+          ls -R
+
+      # Download saved plan from artifacts
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.tf_actions_working_dir }}
+
+      - name: Display structure of downloaded files
+        run: |
+          pwd
+          ls -R
+
+      # Terraform Apply
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
