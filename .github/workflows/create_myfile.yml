@@ -24,15 +24,15 @@ jobs:
           SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ' ')
 
           # Create an environment file to pass the directories to the next step
-          echo "DIRECTORIES=$SUBFOLDERS" > directories.env
+          echo $SUBFOLDERS
         env:
           DIRECTORIES: ${{ steps.find-subfolders.outputs.DIRECTORIES }}
 
-      - name: Pass directories to reusable job and create myfile.txt
-        run: |
-          # Split the directories using ' ' delimiter and call the reusable job for each directory
-          IFS=' ' read -r -a DIR_ARRAY <<< "$DIRECTORIES"
-          for DIR in "${DIR_ARRAY[@]}"; do
-            echo "Creating myfile.txt in $DIR"
-            gh workflow run create_myfile_job.yml --env-file directories.env --directory "$DIR"
-          done
+      # - name: Pass directories to reusable job and create myfile.txt
+      #   run: |
+      #     # Split the directories using ' ' delimiter and call the reusable job for each directory
+      #     IFS=' ' read -r -a DIR_ARRAY <<< "$DIRECTORIES"
+      #     for DIR in "${DIR_ARRAY[@]}"; do
+      #       echo "Creating myfile.txt in $DIR"
+      #       gh workflow run create_myfile_job.yml --env-file directories.env --directory "$DIR"
+      #     done
