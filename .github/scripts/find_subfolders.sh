@@ -21,4 +21,5 @@ for subfolder in "$root_dir"/*; do
 done
 
 # Set the JSON output as an environment variable
-echo "export SUBFOLDERS='$json_output'" >> $GITHUB_ENV
+echo "SUBFOLDERS=$json_output" >> $GITHUB_ENV
+

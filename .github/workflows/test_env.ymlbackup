@@ -17,3 +17,6 @@ jobs:
           ./.github/scripts/env-test.sh
         env:
           FOO_STEP: bar on step
+      - name: Print output from previous step
+        run: |
+          echo env.
