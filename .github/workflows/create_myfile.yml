@@ -24,7 +24,7 @@ jobs:
           SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d -exec realpath {} \; | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
 
           # Format the result as a JSON array
-          SUBFOLDERS_JSON="[${SUBFOLDERS//, /,}]"
+          SUBFOLDERS_JSON="[${SUBFOLDERS//, /, }]"
 
           # Save the subfolders to an environment file
           echo "SUBFOLDERS_JSON=${SUBFOLDERS_JSON}" >> $GITHUB_ENV
