@@ -1,5 +1,8 @@
 name: Create myfile.txt in each second-level subfolder
 
+env:
+  ROOT_DIR: "terraform/captionhealth.com/dev1"
+
 on:
   push:
     # paths:
@@ -9,8 +12,6 @@ on:
 jobs:
   find-subfolders:
     runs-on: ubuntu-latest
-    env:
-      ROOT_DIR: "./terraform/captionhealth.com/dev1"
 
     steps:
       - name: Checkout repository
