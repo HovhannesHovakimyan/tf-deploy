@@ -2,8 +2,8 @@ name: Create myfile.txt in each second-level subfolder
 
 on:
   push:
-    # paths:
-      # - 'terraform/captionhealth.com/**'
+    paths:
+      - "terraform/captionhealth.com/**"
   workflow_dispatch:
 
 jobs:
@@ -20,11 +20,14 @@ jobs:
           # Change to the target directory
           cd terraform/captionhealth.com
 
-          # Find second-level subdirectories and convert to JSON array
-          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          # Find second-level subdirectories and create a comma-separated list with spaces
+          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
 
-          # Output the subfolders as JSON
-          echo "::set-output name=subfolders::$SUBFOLDERS"
+          # Format the result as a JSON array
+          # SUBFOLDERS_JSON=$(echo "[\"${SUBFOLDERS//, /\", \"}\"]")
+
+          # Save the subfolders to an environment file
+          echo "SUBFOLDERS=${SUBFOLDERS}" >> $GITHUB_ENV
 
   create-myfile:
     needs: find-subfolders
@@ -32,7 +35,7 @@ jobs:
 
     strategy:
       matrix:
-        directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
+        directory: ${{ fromJson(env.SUBFOLDERS) }}
 
     steps:
       - name: Checkout repository
