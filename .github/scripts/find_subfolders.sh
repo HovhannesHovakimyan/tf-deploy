@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the root directory
-root_dir="$ROOT_DIR"
+root_dir=$ROOT_DIR
 
 # Initialize an empty JSON object
 json_output="{ \"SUBFOLDERS\": {} }"
