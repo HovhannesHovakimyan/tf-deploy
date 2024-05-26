@@ -20,8 +20,8 @@ jobs:
         env:
           ROOT_DIR: "./terraform/captionhealth.com/dev1"
         run: |
-          chmod +x ./.github/scripts/find_subfolders.sh
-          ./.github/scripts/find_subfolders.sh
+          chmod +x ./.github/scripts/find_subfolders_out_string
+          ./.github/scripts/find_subfolders_out_string
 
       - name: Print JSON
         run: |
@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         # directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
-        directory: [/home/runner/work/tf-deploy/tf-deploy/terraform/captionhealth.com/dev1/ccp1, /home/runner/work/tf-deploy/tf-deploy/terraform/captionhealth.com/dev1/edw1]
+        directory: ${{ env.SUBFOLDERS }}
 
     steps:
       # - name: Checkout repository
