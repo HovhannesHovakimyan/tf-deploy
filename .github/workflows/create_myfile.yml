@@ -2,8 +2,8 @@ name: Create myfile.txt in each second-level subfolder
 
 on:
   push:
-    paths:
-      - "terraform/captionhealth.com/**"
+    # paths:
+      # - "terraform/captionhealth.com/**"
   workflow_dispatch:
 
 jobs:
