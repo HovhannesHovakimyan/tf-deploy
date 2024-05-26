@@ -37,13 +37,18 @@ jobs:
 
     strategy:
       matrix:
-        directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
+        # directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
+        directory: [/home/runner/work/tf-deploy/tf-deploy/terraform/captionhealth.com/dev1/ccp1, /home/runner/work/tf-deploy/tf-deploy/terraform/captionhealth.com/dev1/edw1]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
 
-      - name: Create myfile.txt
-        uses: ./.github/actions/create-myfile
-        with:
-          directory: ${{ matrix.directory }}
+      # - name: Create myfile.txt
+      #   uses: ./.github/actions/create-myfile
+      #   with:
+      #     directory: ${{ matrix.directory }}
+
+      - name: Print matrix
+        run: |
+          echo matrix.directory
