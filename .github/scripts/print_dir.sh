@@ -1,5 +1,7 @@
+#!/bin/bash
+
 # Define the base directory
-base_dir="./terraform/captionhealth.com/dev1"
+base_dir=$ROOT_DIR
 
 # Initialize an empty array for subfolders
 subfolders=()
