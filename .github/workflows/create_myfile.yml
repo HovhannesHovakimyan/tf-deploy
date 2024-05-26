@@ -26,8 +26,11 @@ jobs:
           # Format the result as a JSON array
           SUBFOLDERS_JSON=$(echo "[\"${SUBFOLDERS//, /\", \"}\"]")
 
-          # Output the subfolders as JSON
-          echo "::set-output name=SUBFOLDERS_JSON::${SUBFOLDERS_JSON}"
+          # Save the subfolders to an environment file
+          echo "SUBFOLDERS_JSON=${SUBFOLDERS_JSON}" >> $GITHUB_ENV
+
+    outputs:
+      subfolders: ${{ steps.find_subfolders.outputs.SUBFOLDERS_JSON }}
 
   create-myfile:
     needs: find-subfolders
@@ -35,7 +38,7 @@ jobs:
 
     strategy:
       matrix:
-        directory: ${{fromJson(needs.find-subfolders.outputs.SUBFOLDERS_JSON)}}
+        directory: ${{ fromJson(${{ needs.find-subfolders.outputs.subfolders }}) }}
 
     steps:
       - name: Checkout repository
