@@ -2,12 +2,12 @@ name: Create myfile.txt in each second-level subfolder
 
 on:
   push:
-    # paths:
-    #   - 'terraform/captionhealth.com/**'
+    paths:
+      - "terraform/captionhealth.com/**"
   workflow_dispatch:
 
 jobs:
-  find-subfolders-and-create-myfile:
+  find-subfolders:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,25 +20,25 @@ jobs:
           # Change to the target directory
           cd terraform/captionhealth.com
 
-          # Find second-level subdirectories
-          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ', ')
+          # Find second-level subdirectories and convert to JSON array
+          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | jq -R -s -c 'split("\n") | map(select(length > 0))')
 
-          # Create an environment file to pass the directories to the next step
-          echo $SUBFOLDERS >> $GITHUB_ENV
+          # Save the subfolders as an output
+          echo "subfolders=$SUBFOLDERS" >> $GITHUB_ENV
 
-      # - name: Pass directories to reusable job and create myfile.txt
-      #   run: |
-      #     # Split the directories using ' ' delimiter and call the reusable job for each directory
-      #     IFS=' ' read -r -a DIR_ARRAY <<< "$DIRECTORIES"
-      #     for DIR in "${DIR_ARRAY[@]}"; do
-      #       echo "Creating myfile.txt in $DIR"
-      #       gh workflow run create_myfile_job.yml --env-file directories.env --directory "$DIR"
-      #     done
+  create-myfile:
+    needs: find-subfolders
+    runs-on: ubuntu-latest
 
-  second-job:
-    uses: ./.github/workflows/create_myfile_job.yml
     strategy:
       matrix:
-        directories: ${{ fromJson(needs.find-subfolders.outputs.SUBFOLDERS) }}
-    with:
-      directories: ${{ matrix.directories }}
+        directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create myfile.txt
+        uses: ./.github/actions/create-myfile
+        with:
+          directory: ${{ matrix.directory }}

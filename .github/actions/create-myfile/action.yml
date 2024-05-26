@@ -1,0 +1,15 @@
+name: "Create myfile.txt"
+description: "Action to create myfile.txt in specified directories"
+inputs:
+  directory:
+    description: "Directory to create myfile.txt in"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Create myfile.txt
+      shell: bash
+      run: |
+        echo "Creating myfile.txt in ${{ inputs.directory }}"
+        mkdir -p "${{ inputs.directory }}"
+        touch "${{ inputs.directory }}/myfile.txt"
