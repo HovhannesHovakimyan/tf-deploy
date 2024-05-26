@@ -38,7 +38,7 @@ jobs:
       #     done
 
   second-job:
-    uses: ./.github/workflow/create_myfile_job.yml
+    uses: ./.github/workflows/create_myfile_job.yml
     strategy:
       matrix:
         directories: ${{ fromJson(needs.find-subfolders.outputs.SUBFOLDERS) }}
