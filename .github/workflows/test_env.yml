@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Test envs
-        run: ./.github/scripts/env-test.sh
+        run: |
+          chmod +x ./.github/scripts/env-test.sh
+          ./.github/scripts/env-test.sh
         env:
           FOO_STEP: bar on step
