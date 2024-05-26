@@ -42,3 +42,5 @@ jobs:
     strategy:
       matrix:
         directories: ${{ fromJson(needs.find-subfolders.outputs.SUBFOLDERS) }}
+    with:
+      directories: ${{ matrix.directories }}
