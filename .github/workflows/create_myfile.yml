@@ -25,30 +25,10 @@ jobs:
 
       - name: Print JSON
         run: |
-          echo "Hello World!"
           echo ${{ env.SUBFOLDERS }}
 
-      # - name: Find second-level subfolders
-      #   id: find_subfolders
-      #   run: |
-      #     # Change to the target directory
-      #     cd terraform/captionhealth.com
-
-      #     # Find second-level subdirectories and create a comma-separated list with spaces
-      #     SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d -exec realpath {} \; | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
-
-      #     # Format the result as a JSON array
-      #     SUBFOLDERS_JSON=$(echo $SUBFOLDERS | jq -R 'split(", ")')
-
-      #     # Save the subfolders to an environment file
-      #     echo "SUBFOLDERS=$(jq -n --argjson arr "$SUBFOLDERS_JSON" '{"SUBFOLDERS": $arr}')" >> $GITHUB_ENV
-
-      #     # Echo for troubleshooting
-      #     echo $SUBFOLDERS
-      #     echo $SUBFOLDERS_JSON
-
     outputs:
-      subfolders: ${{ steps.find_subfolders.outputs.SUBFOLDERS }}
+      subfolders: ${{ env.SUBFOLDERS }}
 
   create-myfile:
     needs: find-subfolders
