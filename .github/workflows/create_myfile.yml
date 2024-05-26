@@ -29,6 +29,10 @@ jobs:
           # Save the subfolders to an environment file
           echo "SUBFOLDERS_JSON=${SUBFOLDERS_JSON}" >> $GITHUB_ENV
 
+          # Echo for troubleshooting
+          echo SUBFOLDERS
+          echo SUBFOLDERS_JSON
+
     outputs:
       subfolders: ${{ steps.find_subfolders.outputs.SUBFOLDERS_JSON }}
 
