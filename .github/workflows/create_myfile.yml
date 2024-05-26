@@ -16,25 +16,33 @@ jobs:
 
       - name: Find second-level subfolders
         id: find_subfolders
-        run: |
-          # Change to the target directory
-          cd terraform/captionhealth.com
+        shell: bash
+        env:
+          ROOT_DIR: "./terraform/captionhealth.com/dev1"
+        run: chmod +x ./scripts/find_subfolders.sh
+          ./scripts/find_subfolders.sh
 
-          # Find second-level subdirectories and create a comma-separated list with spaces
-          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d -exec realpath {} \; | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
+      # - name: Find second-level subfolders
+      #   id: find_subfolders
+      #   run: |
+      #     # Change to the target directory
+      #     cd terraform/captionhealth.com
 
-          # Format the result as a JSON array
-          SUBFOLDERS_JSON="[${SUBFOLDERS//, /, }]"
+      #     # Find second-level subdirectories and create a comma-separated list with spaces
+      #     SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d -exec realpath {} \; | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
 
-          # Save the subfolders to an environment file
-          echo "SUBFOLDERS=${SUBFOLDERS_JSON}" >> $GITHUB_ENV
+      #     # Format the result as a JSON array
+      #     SUBFOLDERS_JSON=$(echo $SUBFOLDERS | jq -R 'split(", ")')
 
-          # Echo for troubleshooting
-          echo $SUBFOLDERS
-          echo $SUBFOLDERS_JSON
+      #     # Save the subfolders to an environment file
+      #     echo "SUBFOLDERS=$(jq -n --argjson arr "$SUBFOLDERS_JSON" '{"SUBFOLDERS": $arr}')" >> $GITHUB_ENV
+
+      #     # Echo for troubleshooting
+      #     echo $SUBFOLDERS
+      #     echo $SUBFOLDERS_JSON
 
     outputs:
-      subfolders: ${{ steps.find_subfolders.outputs.SUBFOLDERS_JSON }}
+      subfolders: ${{ steps.find_subfolders.outputs.SUBFOLDERS }}
 
   create-myfile:
     needs: find-subfolders
@@ -42,7 +50,7 @@ jobs:
 
     strategy:
       matrix:
-        directory: ${{ needs.find-subfolders.outputs.subfolders }}
+        directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
 
     steps:
       - name: Checkout repository
