@@ -24,7 +24,7 @@ jobs:
           SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ' ')
 
           # Create an environment file to pass the directories to the next step
-          echo $SUBFOLDERS
+          echo $SUBFOLDERS >> $GITHUB_ENV
         env:
           DIRECTORIES: ${{ steps.find-subfolders.outputs.DIRECTORIES }}
 
@@ -36,3 +36,9 @@ jobs:
       #       echo "Creating myfile.txt in $DIR"
       #       gh workflow run create_myfile_job.yml --env-file directories.env --directory "$DIR"
       #     done
+
+  second-job:
+    uses: ./.github/workflow/create_myfile_job.yml
+    strategy:
+      matrix:
+        directories: ${{ fromJson(needs.find-subfolders.outputs.SUBFOLDERS) }}

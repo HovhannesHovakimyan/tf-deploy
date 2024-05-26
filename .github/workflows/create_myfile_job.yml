@@ -3,13 +3,16 @@ on:
   workflow_call:
     inputs:
       directories:
-        description: 'List of directories to create myfile.txt in'
+        description: "List of directories to create myfile.txt in"
         required: true
         type: string
 
 jobs:
   create-myfile:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directories: ${{ fromJson(needs.find-subfolders.outputs.SUBFOLDERS) }}
 
     steps:
       - name: Create myfile.txt in each directory
