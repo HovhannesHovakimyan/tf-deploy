@@ -16,7 +16,6 @@ jobs:
 
       - name: Find second-level subfolders
         id: find_subfolders
-        shell: bash
         env:
           ROOT_DIR: "./terraform/captionhealth.com/dev1"
         run: chmod +x ./.github/scripts/find_subfolders.sh
@@ -27,6 +26,8 @@ jobs:
           echo "Hello World!"
           echo ${{ env.SUBFOLDERS }}
           echo ${{ steps.find_subfolders.outputs.SUBFOLDERS }}
+          echo ${{ env.testenv }}
+          echo ${{ steps.find_subfolders.outputs.testenv }}
 
       # - name: Find second-level subfolders
       #   id: find_subfolders

@@ -22,4 +22,5 @@ done
 
 # Set the JSON output as an environment variable
 echo "SUBFOLDERS=$json_output" >> $GITHUB_ENV
+echo "testenv=$root_dir" >> $GITHUB_ENV
 
