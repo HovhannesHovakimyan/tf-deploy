@@ -23,7 +23,10 @@ jobs:
           ./.github/scripts/find_subfolders.sh
 
       - name: Print JSON
-        run: echo ${{ steps.find_subfolders.outputs.subfolders }}
+        run: |
+          echo "Hello World!"
+          echo ${{ env.subfolders }}
+          echo ${{ steps.find_subfolders.outputs.subfolders }}
 
       # - name: Find second-level subfolders
       #   id: find_subfolders
