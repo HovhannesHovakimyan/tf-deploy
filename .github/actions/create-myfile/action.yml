@@ -10,10 +10,5 @@ runs:
     - name: Create myfile.txt
       shell: bash
       run: |
-        # Parse the input argument
-        DIRECTORY=$1
-        # Loop through each item in the array and recursively print folder names
-        for dir in "${DIRECTORY[@]}"; do
-          echo "Processing directory: $dir"
-          find "$dir" -type d -exec basename {} \; # Prints folder names recursively
-        done
+        const folder = getInput('directory');
+        echo ${folder};
