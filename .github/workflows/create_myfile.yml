@@ -18,8 +18,9 @@ jobs:
         id: find_subfolders
         env:
           ROOT_DIR: "./terraform/captionhealth.com/dev1"
-        run: chmod +x ./.github/scripts/find_subfolders.sh
-          ./.github/scripts/find_subfolders.sh
+        run: |
+          chmod +x ./.github/scripts/find_subfolders.sh
+          bash ./.github/scripts/find_subfolders.sh
 
       - name: Print JSON
         run: |
