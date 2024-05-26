@@ -42,7 +42,7 @@ jobs:
 
     strategy:
       matrix:
-        directory: ${{fromJson(needs.find-subfolders.outputs.SUBFOLDERS_JSON)}}
+        directory: ${{fromJson(needs.find-subfolders.outputs.subfolders)}}
 
     steps:
       - name: Checkout repository
