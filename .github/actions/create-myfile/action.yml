@@ -10,8 +10,10 @@ runs:
     - name: Create myfile.txt
       shell: bash
       run: |
-        # Loop through each item in the array and print it
-        for dir in ${{ inputs.directory }}; do
+        # Parse the input argument
+        DIRECTORY=$1
+        # Loop through each item in the array and recursively print folder names
+        for dir in "${DIRECTORY[@]}"; do
           echo "Processing directory: $dir"
-          # Add your logic here to create myfile.txt in each directory
+          find "$dir" -type d -exec basename {} \; # Prints folder names recursively
         done
