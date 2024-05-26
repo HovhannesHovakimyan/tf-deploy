@@ -9,6 +9,8 @@ on:
 jobs:
   find-subfolders:
     runs-on: ubuntu-latest
+    env:
+      ROOT_DIR: "./terraform/captionhealth.com/dev1"
 
     steps:
       - name: Checkout repository
@@ -17,8 +19,6 @@ jobs:
       - name: Find second-level subfolders
         id: find_subfolders
         shell: bash
-        env:
-          ROOT_DIR: "./terraform/captionhealth.com/dev1"
         run: |
           # Define the root directory
           root_dir="$ROOT_DIR"
