@@ -51,4 +51,4 @@ jobs:
 
       - name: Print matrix
         run: |
-          echo matrix.directory
+          echo ${{ matrix.directory }}
