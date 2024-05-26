@@ -40,9 +40,9 @@ jobs:
     needs: find-subfolders
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        directory: ${{fromJson(needs.find-subfolders.outputs.SUBFOLDERS_JSON)}}
+    # strategy:
+    #   matrix:
+    #     directory: ${{fromJson(needs.find-subfolders.outputs.SUBFOLDERS_JSON)}}
 
     steps:
       - name: Checkout repository

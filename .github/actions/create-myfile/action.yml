@@ -10,5 +10,4 @@ runs:
     - name: Create myfile.txt
       shell: bash
       run: |
-        const folder = getInput('directory');
-        echo ${folder};
+        echo ${{ inputs.directory }}
