@@ -26,7 +26,6 @@ jobs:
       - name: Print JSON
         run: |
           echo ${{ env.SUBFOLDERS }}
-          echo ${{ fromJson(env.SUBFOLDERS) }}
 
     outputs:
       subfolders: ${{ env.SUBFOLDERS }}
