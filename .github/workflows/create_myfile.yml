@@ -38,7 +38,7 @@ jobs:
 
     strategy:
       matrix:
-        directory: ${{ fromJson(${{ needs.find-subfolders.outputs.subfolders }}) }}
+        directory: ${{fromJson(needs.find-subfolders.outputs.SUBFOLDERS_JSON)}}
 
     steps:
       - name: Checkout repository
