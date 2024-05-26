@@ -51,4 +51,4 @@ jobs:
       - name: Create myfile.txt
         uses: ./.github/actions/create-myfile
         with:
-          directory: "[/home/adminUser/terraform/captionhealth.com/dev1/ccp1, /home/adminUser/terraform/captionhealth.com/dev1/edw1]"
+          directory: "/home/adminUser/terraform/captionhealth.com/dev1/ccp1, /home/adminUser/terraform/captionhealth.com/dev1/edw1"
