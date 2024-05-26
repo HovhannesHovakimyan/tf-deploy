@@ -29,16 +29,16 @@ jobs:
 
           # Loop through subfolders
           for subfolder in "$root_dir"/*; do
-              if [ -d "$subfolder" ]; then
-                  # Extract subfolder name
-                  subfolder_name=$(basename "$subfolder")
+            if [ -d "$subfolder" ]; then
+              # Extract subfolder name
+              subfolder_name=$(basename "$subfolder")
 
-                  # Get absolute path
-                  absolute_path=$(realpath "$subfolder")
+              # Get absolute path
+              absolute_path=$(realpath "$subfolder")
 
-                  # Add subfolder name and absolute path to JSON
-                  json_output=$(echo "$json_output" | jq --arg name "$subfolder_name" --arg path "$absolute_path" '.SUBFOLDERS += { ($name): $path }')
-              fi
+              # Add subfolder name and absolute path to JSON
+              json_output=$(echo "$json_output" | jq --arg name "$subfolder_name" --arg path "$absolute_path" '.SUBFOLDERS += { ($name): $path }')
+            fi
           done
 
           # Set the JSON output as an environment variable
