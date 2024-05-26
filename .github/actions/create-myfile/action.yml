@@ -10,4 +10,6 @@ runs:
     - name: Create myfile.txt
       shell: bash
       run: |
-        echo ${{ inputs.directory }}
+        for item in ${{ inputs.directory }}; do
+          echo $item
+        done

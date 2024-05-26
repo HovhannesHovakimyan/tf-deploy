@@ -40,9 +40,9 @@ jobs:
     needs: find-subfolders
     runs-on: ubuntu-latest
 
-    # strategy:
-    #   matrix:
-    #     directory: ${{fromJson(needs.find-subfolders.outputs.SUBFOLDERS_JSON)}}
+    strategy:
+      matrix:
+        directory: [one, two, three]
 
     steps:
       - name: Checkout repository
@@ -51,4 +51,4 @@ jobs:
       - name: Create myfile.txt
         uses: ./.github/actions/create-myfile
         with:
-          directory: "Hello from main workflow"
+          directory: ${{ matrix.directory }}
