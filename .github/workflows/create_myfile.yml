@@ -27,9 +27,6 @@ jobs:
         run: |
           echo "Hello World!"
           echo ${{ env.SUBFOLDERS }}
-          echo ${{ steps.find_subfolders.outputs.SUBFOLDERS }}
-          echo ${{ env.testenv }}
-          echo ${{ steps.find_subfolders.outputs.testenv }}
 
       # - name: Find second-level subfolders
       #   id: find_subfolders
