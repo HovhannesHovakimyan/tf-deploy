@@ -21,5 +21,5 @@ done <<< "$subdirs"
 SUBFOLDERS=${result%, }
 
 # Print the final result
-echo SUBFOLDERS="[$SUBFOLDERS]" >> $GITHUB_ENV
+echo SUBFOLDERS=$SUBFOLDERS >> $GITHUB_ENV
 
