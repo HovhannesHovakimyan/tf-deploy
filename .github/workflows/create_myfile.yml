@@ -21,12 +21,10 @@ jobs:
           cd terraform/captionhealth.com
 
           # Find second-level subdirectories
-          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ' ')
+          SUBFOLDERS=$(find . -mindepth 2 -maxdepth 2 -type d | tr '\n' ', ')
 
           # Create an environment file to pass the directories to the next step
           echo $SUBFOLDERS >> $GITHUB_ENV
-        env:
-          DIRECTORIES: ${{ steps.find-subfolders.outputs.DIRECTORIES }}
 
       # - name: Pass directories to reusable job and create myfile.txt
       #   run: |
