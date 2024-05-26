@@ -10,6 +10,8 @@ runs:
     - name: Create myfile.txt
       shell: bash
       run: |
-        echo "Creating myfile.txt in ${{ inputs.directory }}"
-        mkdir -p "${{ inputs.directory }}"
-        touch "${{ inputs.directory }}/myfile.txt"
+        # Loop through each item in the array and print it
+        for dir in ${{ inputs.directory }}; do
+          echo "Processing directory: $dir"
+          # Add your logic here to create myfile.txt in each directory
+        done
