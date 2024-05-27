@@ -25,7 +25,8 @@ jobs:
 
       - name: Print JSON
         run: |
-          echo "${{ env.SUBFOLDERS }}"
+          echo ${{ env.SUBFOLDERS }} > data.json
+          cat data.json | jq .
 
     outputs:
       subfolders: ${{ env.SUBFOLDERS }}
