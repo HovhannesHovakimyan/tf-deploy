@@ -31,6 +31,6 @@ json+="]}"
 # jq '.' data.json > fixed_data.json
 
 # Escape quote marks in JSON
-escaped_json=$(echo -e "$json" | sed 's/"/\\"/g')
+escaped_json=$(echo -e "$json" | sed 's/"/\\"/g' | tr -d '[:space:]')
 
 echo SUBFOLDERS=$escaped_json >> $GITHUB_ENV
