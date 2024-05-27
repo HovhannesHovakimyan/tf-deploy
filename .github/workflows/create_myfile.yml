@@ -35,8 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      matrix:
-        directory: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
+      matrix: ${{ fromJson(needs.find-subfolders.outputs.subfolders) }}
 
     steps:
       # - name: Checkout repository
@@ -49,4 +48,4 @@ jobs:
 
       - name: Print matrix
         run: |
-          echo ${{ matrix.directory }}
+          echo ${{ matrix.name }}
