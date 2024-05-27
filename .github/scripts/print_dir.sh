@@ -26,5 +26,10 @@ for ((i = 0; i < ${#subfolders[@]}; i++)); do
 done
 json+="]}"
 
-# Print the JSON
-echo SUBFOLDERS=$json | jq . >> $GITHUB_ENV
+# Format the resulted JSON
+echo $json > data.json
+jq '.' data.json > fixed_data.json
+
+# Set the JSON output as an environment variable
+SUBFOLDERS=$(cat fixed_data.json)
+echo "SUBFOLDERS=$SUBFOLDERS" >> $GITHUB_ENV
