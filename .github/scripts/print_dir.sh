@@ -31,5 +31,12 @@ echo $json > data.json
 jq '.' data.json > fixed_data.json
 
 # Set the JSON output as an environment variable
-SUBFOLDERS=$(cat fixed_data.json)
-echo "SUBFOLDERS=$SUBFOLDERS" >> $GITHUB_ENV
+# SUBFOLDERS=$(cat fixed_data.json)
+# echo "SUBFOLDERS=$SUBFOLDERS" >> $GITHUB_ENV
+
+# Append the variable to the GITHUB_ENV file, preserving formatting
+{
+  echo "SUBFOLDERS<<EOF"
+  echo "$SUBFOLDERS"
+  echo "EOF"
+} >> $GITHUB_ENV
