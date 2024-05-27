@@ -27,9 +27,10 @@ done
 json+="]}"
 
 # Format the resulted JSON
-echo $json > data.json
-jq '.' data.json > fixed_data.json
+# echo "$json" > data.json
+# jq '.' data.json > fixed_data.json
 
-# Set the JSON output as an environment variable
-SUBFOLDERS=$(cat fixed_data.json)
-echo SUBFOLDERS=$SUBFOLDERS >> $GITHUB_ENV
+# Escape quote marks in JSON
+escaped_json=$(echo -e "$json" | sed 's/"/\\"/g')
+
+echo SUBFOLDERS=$escaped_json >> $GITHUB_ENV
