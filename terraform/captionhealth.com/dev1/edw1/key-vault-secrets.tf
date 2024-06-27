@@ -4,7 +4,7 @@ resource "random_password" "edw_postgres_secret" {
 }
 
 module "key_vault_secret" {
-  source = "../../../modules/terraform-azurerm-key-vault-secret"
+  source = "../../modules/terraform-azurerm-key-vault-secret"
 
   azurerm_key_vault_secret_params = {
     # edw_postgres_secret = {

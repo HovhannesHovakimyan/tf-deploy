@@ -1,5 +1,5 @@
 module "app_insights" {
-  source = "../../../modules/terraform-azurerm-application-insights"
+  source = "../../modules/terraform-azurerm-application-insights"
 
   azurerm_application_insights_params = {
     edw_app_insights = {

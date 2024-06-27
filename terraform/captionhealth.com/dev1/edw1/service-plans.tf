@@ -1,5 +1,5 @@
 module "azurerm_service_plan" {
-  source = "../../../modules/terraform-azurerm-service-plan"
+  source = "../../modules/terraform-azurerm-service-plan"
   azurerm_service_plan_params = {
     # edw_service_plan_linux = {
     #   name                         = module.naming["edw_srv_plan_1"].function_app.name_unique # Required

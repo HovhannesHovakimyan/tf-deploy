@@ -1,5 +1,5 @@
 module "private_endpoint" {
-  source = "../../../modules/terraform-azurerm-private-endpoint"
+  source = "../../modules/terraform-azurerm-private-endpoint"
 
   azurerm_private_endpoint_params = {
     # edw_private_endpoint_blob = {

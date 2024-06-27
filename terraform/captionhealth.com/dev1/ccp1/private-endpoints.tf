@@ -1,7 +1,7 @@
 # https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview#private-link-resource
 
 module "private_endpoint" {
-  source = "../../../modules/terraform-azurerm-private-endpoint"
+  source = "../../modules/terraform-azurerm-private-endpoint"
 
   azurerm_private_endpoint_params = {
     # ccp_private_endpoint_main_aks = {

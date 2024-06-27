@@ -1,5 +1,5 @@
 module "static_web_app" {
-  source = "../../../modules/terraform-azurerm-static-web-app"
+  source = "../../modules/terraform-azurerm-static-web-app"
   azurerm_static_web_app_params = {
     # ccp_static_web_app_admin = {
     #   name                               = module.naming["ccp_static_web_app_admin"].static_web_app.name_unique # Required

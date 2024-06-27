@@ -1,5 +1,5 @@
 module "role_assignment" {
-  source = "../../../modules/terraform-azurerm-role-assignment"
+  source = "../../modules/terraform-azurerm-role-assignment"
 
   azurerm_role_assignment_params = {
     # role_assignment_main_aks = {

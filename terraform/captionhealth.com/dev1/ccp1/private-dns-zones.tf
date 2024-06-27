@@ -1,7 +1,7 @@
 # Docs for Private Endpoint DNS Zones https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-dns
 
 module "private_dns_zone" {
-  source = "../../../modules/terraform-azurerm-private-dns-zone"
+  source = "../../modules/terraform-azurerm-private-dns-zone"
 
   azurerm_private_dns_zone_params = {
     # ccp_private_dns_zone_private_endpoint_main_aks = {

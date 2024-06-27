@@ -1,5 +1,5 @@
 module "storage_container" {
-  source = "../../../modules/terraform-azurerm-storage-container"
+  source = "../../modules/terraform-azurerm-storage-container"
 
   azurerm_storage_container_params = {
     # edw_storage_container = {

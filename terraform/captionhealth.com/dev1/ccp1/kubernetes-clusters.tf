@@ -1,5 +1,5 @@
 module "kubernetes_cluster" {
-  source     = "../../../modules/terraform-azurerm-kubernetes-cluster"
+  source     = "../../modules/terraform-azurerm-kubernetes-cluster"
   depends_on = [module.role_assignment]
 
   azurerm_kubernetes_cluster_params = {

@@ -1,5 +1,5 @@
 module "tags" {
-  source = "../../../modules/terraform-azurerm-tags"
+  source = "../../modules/terraform-azurerm-tags"
 
   tags_params = {
     managed_by = "terraform"

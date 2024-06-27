@@ -1,5 +1,5 @@
 module "virtual_network" {
-  source = "../../../modules/terraform-azurerm-virtual-network"
+  source = "../../modules/terraform-azurerm-virtual-network"
 
   azurerm_virtual_network_params = {
     # ccp_main_vnet = {

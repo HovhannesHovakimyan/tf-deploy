@@ -1,5 +1,5 @@
 module "linux_function_app" {
-  source = "../../../modules/terraform-azurerm-linux-function-app"
+  source = "../../modules/terraform-azurerm-linux-function-app"
 
   azurerm_linux_function_app_params = {
     # edw_linux_function_app_1 = {

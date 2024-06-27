@@ -1,5 +1,5 @@
 module "storage_account" {
-  source = "../../../modules/terraform-azurerm-storage-account"
+  source = "../../modules/terraform-azurerm-storage-account"
 
   azurerm_storage_account_params = {
     # edw_storage_account = {

@@ -1,5 +1,5 @@
 module "private_dns_zone_virtual_network_link" {
-  source = "../../../modules/terraform-azurerm-private-dns-virtual-network-link"
+  source = "../../modules/terraform-azurerm-private-dns-virtual-network-link"
 
   azurerm_private_dns_zone_virtual_network_link_params = {
     # edw_private_dns_zone_virtual_network_link_postgres = {

@@ -1,5 +1,5 @@
 module "user_assigned_identity" {
-  source = "../../../modules/terraform-azurerm-user-assigned-identity"
+  source = "../../modules/terraform-azurerm-user-assigned-identity"
 
   azurerm_user_assigned_identity_params = {
     # user_assigned_identity_main_aks = {

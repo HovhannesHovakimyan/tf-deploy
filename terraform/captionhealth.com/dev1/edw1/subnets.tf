@@ -1,5 +1,5 @@
 module "subnet" {
-  source = "../../../modules/terraform-azurerm-subnet"
+  source = "../../modules/terraform-azurerm-subnet"
 
   azurerm_subnet_params = {
     # edw_linux_subnet = {

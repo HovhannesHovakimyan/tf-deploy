@@ -1,5 +1,5 @@
 module "key_vault" {
-  source = "../../../modules/terraform-azurerm-key-vault"
+  source = "../../modules/terraform-azurerm-key-vault"
 
   azurerm_key_vault_params = {
     # ccp_key_vault = {

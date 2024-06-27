@@ -1,5 +1,5 @@
 module "postgresql_flexible_server_database" {
-  source = "../../../modules/terraform-azurerm-postgresql-flexible-server-database"
+  source = "../../modules/terraform-azurerm-postgresql-flexible-server-database"
 
   azurerm_postgresql_flexible_server_database_params = {
     # edw_db1 = {

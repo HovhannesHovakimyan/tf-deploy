@@ -1,5 +1,5 @@
 module "blob_storage" {
-  source = "../../../modules/terraform-azurerm-storage-blob"
+  source = "../../modules/terraform-azurerm-storage-blob"
 
   azurerm_storage_blob_params = {
     # ccp_blob_storage = {

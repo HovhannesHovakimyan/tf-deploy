@@ -4,7 +4,7 @@ resource "random_password" "ccp_postgres_secret" {
 }
 
 module "key_vault_secret" {
-  source = "../../../modules/terraform-azurerm-key-vault-secret"
+  source = "../../modules/terraform-azurerm-key-vault-secret"
 
   azurerm_key_vault_secret_params = {
     # ccp_postgres_secret = {

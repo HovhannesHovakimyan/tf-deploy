@@ -1,5 +1,5 @@
 module "resource_group" {
-  source = "../../../modules/terraform-azurerm-resource-group"
+  source = "../../modules/terraform-azurerm-resource-group"
 
   resource_group_params = {
     ccp_rg = {

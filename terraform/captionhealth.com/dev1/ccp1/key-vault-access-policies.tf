@@ -1,5 +1,5 @@
 module "key_vault_access_policy" {
-  source = "../../../modules/terraform-azurerm-key-vault-access-policy"
+  source = "../../modules/terraform-azurerm-key-vault-access-policy"
 
   azurerm_key_vault_access_policy_params = {
     # ccp_key_vault_access_policy_github_workflow = {
